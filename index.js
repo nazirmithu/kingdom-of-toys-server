@@ -34,6 +34,11 @@ async function run() {
       console.log(newToy)
       const result = await toysCollection.insertOne(newToy);
       res.send(result);
+    });
+
+    app.get('/alltoys', async(req, res)=>{
+      const result = await toysCollection.find().toArray();
+      res.send(result)
     })
 
 
