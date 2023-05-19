@@ -26,10 +26,10 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    const toysCollection = client.db('kingdomToysDB').collection('toys');
+    const toysCollection = client.db('kingdomOfToysDB').collection('toys');
 
 
-    app.post('/toys', async(req, res)=>{
+    app.post('/addtoys', async(req, res)=>{
       const newToy = req.body;
       console.log(newToy)
       const result = await toysCollection.insertOne(newToy);
