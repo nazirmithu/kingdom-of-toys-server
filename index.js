@@ -29,16 +29,24 @@ async function run() {
     const toysCollection = client.db('kingdomOfToysDB').collection('toys');
 
 
-    app.post('/addtoys', async(req, res)=>{
+    app.post('/addtoys', async (req, res) => {
       const newToy = req.body;
       console.log(newToy)
       const result = await toysCollection.insertOne(newToy);
       res.send(result);
     });
 
-    app.get('/alltoys', async(req, res)=>{
+    app.get('/alltoys', async (req, res) => {
       const result = await toysCollection.find().toArray();
       res.send(result)
+    });
+
+    app.get('/mytoys/:email', async (req, res) => {
+      console.log(req.params.email)
+      const result= await toysCollection.find({
+        seller_email: req.params.email}).toArray();
+      res.send(result)
+      
     })
 
 
@@ -58,12 +66,12 @@ app.use(cors());
 app.use(express.json());
 
 
-app.get('/', (req,res)=>{
-    res.send('kingdom of joys server is running')
+app.get('/', (req, res) => {
+  res.send('kingdom of joys server is running')
 })
 
 
 
-app.listen(port,()=>{
-    console.log(`kingdom server is running on port:${port}`)
+app.listen(port, () => {
+  console.log(`kingdom server is running on port:${port}`)
 })
