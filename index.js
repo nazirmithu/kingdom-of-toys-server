@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -29,6 +29,24 @@ async function run() {
     const toysCollection = client.db('kingdomOfToysDB').collection('toys');
 
 
+    const indexToys = { toyName: 1 }
+    const indexToysOptions = { name: "toyName" }
+
+    const result = await toysCollection.createIndex(indexToys, indexToysOptions)
+
+    app.get('/toysearch/:text', async (req, res) => {
+      const toySearch = req.params.text;
+      const result = await toysCollection.find({
+        $or: [
+          { toyName: { $regex: toySearch, $options: 'i' } }
+        ]
+      }).toArray();
+
+      res.send(result)
+    })
+
+
+
     app.post('/addtoys', async (req, res) => {
       const newToy = req.body;
       console.log(newToy)
@@ -43,10 +61,24 @@ async function run() {
 
     app.get('/mytoys/:email', async (req, res) => {
       console.log(req.params.email)
-      const result= await toysCollection.find({
-        seller_email: req.params.email}).toArray();
+      const result = await toysCollection.find({
+        seller_email: req.params.email
+      }).toArray();
       res.send(result)
-      
+    })
+
+    app.get('/alltoys/:id',async(req, res)=>{
+      const id = req.params.id
+      const query = {_id: new ObjectId(id)}
+      const result = await toysCollection.findOne(query);
+      res.send(result);
+    })
+
+    app.delete('/mytoys/:id', async(req,res)=>{
+      const id=req.params.id;
+      const query ={_id: new ObjectId(id)}
+      const result = await toysCollection.deleteOne(query);
+      res.send(result);
     })
 
 
