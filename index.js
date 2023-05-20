@@ -74,7 +74,7 @@ async function run() {
       res.send(result);
     })
 
-    app.put('/alltoys/:id', async (req, res) => {
+    app.patch('/alltoys/:id', async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) }
       const options = { upsert: true }
