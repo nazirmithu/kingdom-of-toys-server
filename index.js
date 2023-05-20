@@ -5,10 +5,6 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
-// kingdomOfToys
-// AzsJBGZ6OBPexPgo
-
-
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.tbxlkz1.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -42,10 +38,9 @@ async function run() {
         ]
       }).toArray();
 
+      console.log(result)
       res.send(result)
     })
-
-
 
     app.post('/addtoys', async (req, res) => {
       const newToy = req.body;
@@ -54,8 +49,13 @@ async function run() {
       res.send(result);
     });
 
-    app.get('/alltoys', async (req, res) => {
+    app.get('/reacttabs', async (req, res) => {
       const result = await toysCollection.find().toArray();
+      res.send(result)
+    });
+
+    app.get('/alltoys', async (req, res) => {
+      const result = await toysCollection.find().limit(20).toArray();
       res.send(result)
     });
 
@@ -67,7 +67,7 @@ async function run() {
       res.send(result)
     })
 
-    app.get('/alltoys/:id', async (req, res) => {
+    app.get('/toy/:id', async (req, res) => {
       const id = req.params.id
       const query = { _id: new ObjectId(id) }
       const result = await toysCollection.findOne(query);
@@ -78,7 +78,7 @@ async function run() {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) }
       const options = { upsert: true }
-      const newUpdatedToy= req.body;
+      const newUpdatedToy = req.body;
       const updatedToy = {
         $set: {
           price: newUpdatedToy.price,
@@ -86,7 +86,7 @@ async function run() {
           description: newUpdatedToy.description
         }
       }
-      const result= await toysCollection.updateOne(filter,options,updatedToy)
+      const result = await toysCollection.updateOne(filter, options, updatedToy)
       res.send(result)
     })
 
