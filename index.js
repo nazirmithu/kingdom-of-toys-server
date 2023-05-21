@@ -6,6 +6,9 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 
+app.use(cors());
+app.use(express.json());
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.tbxlkz1.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -108,17 +111,9 @@ async function run() {
 }
 run().catch(console.dir);
 
-
-
-app.use(cors());
-app.use(express.json());
-
-
 app.get('/', (req, res) => {
   res.send('kingdom of joys server is running')
 })
-
-
 
 app.listen(port, () => {
   console.log(`kingdom server is running on port:${port}`)
